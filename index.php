@@ -165,10 +165,10 @@ require 'constantes.inc.php';
                 <form class="form center-block" method="POST" action="upload.php" enctype="multipart/form-data">
                     <div class="modal-body">
                         <textarea class="form-control input-lg" autofocus="" placeholder="Que voulez-vous partager ?"></textarea>
-                        <input type="file" name="filesToUpload[]" value="7000000" multiple accept="image/png, image/gif, image/jpeg" />
+                        <input type="file" name="fileToUpload[]" multiple accept="image/png, image/gif, image/jpeg, image/jpg" />
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" name="envoyer" value="Envoyer">
+                        <input type="submit" name="submit" value="Envoyer">
                     </div>
                 </form>
             </div>
