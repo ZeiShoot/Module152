@@ -1,4 +1,5 @@
 <?php
+require 'constantes.inc.php';
 
 ?>
 <!DOCTYPE html>
@@ -25,31 +26,21 @@
                     <div class="navbar navbar-blue navbar-static-top">
                         <div class="navbar-header">
                             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
-								<span class="sr-only">Toggle</span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-							</button>
+                                <span class="sr-only">Toggle</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
                             <a href="http://usebootstrap.com/theme/facebook" class="navbar-brand logo">b</a>
                         </div>
                         <nav class="collapse navbar-collapse" role="navigation">
-                            <form class="navbar-form navbar-left" method="POST" action="upload.php" enctype="multipart/form-data">
-                                <div class="input-group input-group-sm" style="max-width:360px;">
-                                    <input type="hidden" name="MAX_FILE_SIZE" value="7000000">
-                                    <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-default" type="submit"><i
-												class="glyphicon glyphicon-search"></i></button>
-                                    </div>
-                                </div>
-                            </form>
+                            <!--insérer la barre de recherche ici-->
                             <ul class="nav navbar-nav">
                                 <li>
                                     <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
                                 </li>
                                 <li>
-                                    <a href="#postModal" role="button" data-toggle="modal"><i
-											class="glyphicon glyphicon-plus"></i> Post</a>
+                                    <a href="#postModal" role="button" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i> Post</a>
                                 </li>
                                 <li>
                                     <a href="#"><span class="badge">badge</span></a>
@@ -57,8 +48,7 @@
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-											class="glyphicon glyphicon-user"></i></a>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
                                     <ul class="dropdown-menu">
                                         <li><a href="">Compte</a></li>
                                         <li><a href="">Paramètre</a></li>
@@ -115,8 +105,7 @@
                                             <form>
                                                 <div class="input-group">
                                                     <div class="input-group-btn">
-                                                        <button class="btn btn-default">+1</button><button class="btn btn-default"><i
-																class="glyphicon glyphicon-share"></i></button>
+                                                        <button class="btn btn-default">+1</button><button class="btn btn-default"><i class="glyphicon glyphicon-share"></i></button>
                                                     </div>
                                                     <input class="form-control" placeholder="Add a comment.." type="text">
                                                 </div>
@@ -172,16 +161,16 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button> Faire un nouveau Post
                 </div>
-                <div class="modal-body">
-                    <!--	Formulaire d'envoi de fichier	-->
-                    <form class="form center-block">
+                <!--	Formulaire d'envoi de fichier	-->
+                <form class="form center-block" method="POST" action="upload.php" enctype="multipart/form-data">
+                    <div class="modal-body">
                         <textarea class="form-control input-lg" autofocus="" placeholder="Que voulez-vous partager ?"></textarea>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <input type="file" name="myImage" multiple accept="image/png, image/gif, image/jpeg" />
-                    <input type="submit" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">
-                </div>
+                        <input type="file" name="filesToUpload[]" value="7000000" multiple accept="image/png, image/gif, image/jpeg" />
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="envoyer" value="Envoyer">
+                    </div>
+                </form>
             </div>
         </div>
     </div>
