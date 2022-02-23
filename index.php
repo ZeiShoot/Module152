@@ -1,10 +1,13 @@
+<?php
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>Facebook Theme Demo</title>
+    <title>Main Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="assets/css/facebook.css" rel="stylesheet">
@@ -30,8 +33,9 @@
                             <a href="http://usebootstrap.com/theme/facebook" class="navbar-brand logo">b</a>
                         </div>
                         <nav class="collapse navbar-collapse" role="navigation">
-                            <form class="navbar-form navbar-left">
+                            <form class="navbar-form navbar-left" method="POST" action="upload.php" enctype="multipart/form-data">
                                 <div class="input-group input-group-sm" style="max-width:360px;">
+                                    <input type="hidden" name="MAX_FILE_SIZE" value="7000000">
                                     <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
                                     <div class="input-group-btn">
                                         <button class="btn btn-default" type="submit"><i
