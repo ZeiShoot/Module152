@@ -164,8 +164,8 @@ require 'constantes.inc.php';
                 <!--	Formulaire d'envoi de fichier	-->
                 <form class="form center-block" method="POST" action="upload.php" enctype="multipart/form-data">
                     <div class="modal-body">
-                        <textarea class="form-control input-lg" autofocus="" placeholder="Que voulez-vous partager ?"></textarea>
-                        <input type="file" name="fileToUpload[]" multiple accept="image/png, image/gif, image/jpeg, image/jpg" />
+                        <textarea class="form-control input-lg" name="commentaire" autofocus="" placeholder="Que voulez-vous partager ?"></textarea>
+                        <input type="file" name="fileToUpload" multiple accept="image/png, image/gif, image/jpeg, image/jpg" />
                     </div>
                     <div class="modal-footer">
                         <input type="submit" name="submit" value="Envoyer">

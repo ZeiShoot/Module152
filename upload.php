@@ -1,16 +1,23 @@
 <?php
 
-require 'constantes.inc.php';
+require 'connect.php';
+$commentaire = filter_input(INPUT_POST,"commentaire");
 
-$target_dir = "uploads/";
+$target_dir = "./assets/uploads/";                            //uniqid ici, a la place du name
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
-$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
-if(isset($_POST["submit"])) {
+if (isset($_POST["submit"])) {
   $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-  if($check !== false) {
-    echo "File is an image - " . $check["mime"] . ".";
+  if ($check !== false) {
+    header('Location: index.php');
+    AddImage($_FILES["fileToUpload"]["type"], $_FILES["fileToUpload"]["name"]);
+    AddPost($commentaire);
+    if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file)) {
+
+      echo 'Files has uploaded';
+    };
     $uploadOk = 1;
   } else {
     echo "File is not an image.";
@@ -18,21 +25,39 @@ if(isset($_POST["submit"])) {
   }
 }
 
-
-
 //Fonction ajout dans la bdd
 function AddImage($type, $nom)
 {
   static $ps = null;
   $sql = "INSERT INTO `M152`.`Media` (`typeMedia`, `nomMedia`) ";
-  $sql .= "VALUES (:type, :nom)";
+  $sql .= "VALUES (:TYPE, :NOM)";
   if ($ps == null) {
-    $ps = pokedexDB()->prepare($sql);
+    $ps = dbconnect()->prepare($sql);
   }
   $answer = false;
   try {
-    $ps->bindParam(':type', $type, PDO::PARAM_STR);
-    $ps->bindParam(':nom', $nom, PDO::PARAM_STR);
+    $ps->bindParam(':TYPE', $type, PDO::PARAM_STR);
+    $ps->bindParam(':NOM', $nom, PDO::PARAM_STR);
+
+    $answer = $ps->execute();
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+
+//Fonction du post (texte) dans la base de données et dans la table post*
+function AddPost($commentaire)
+{
+  static $ps = null;
+  $sql = "INSERT INTO `M152`.`Post` (`commentaire`) ";
+  $sql .= "VALUES (:COMMENTAIRE)";
+  if ($ps == null) {
+    $ps = dbconnect()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':COMMENTAIRE', $commentaire, PDO::PARAM_STR);
 
     $answer = $ps->execute();
   } catch (PDOException $e) {
