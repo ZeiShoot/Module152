@@ -1,5 +1,5 @@
 <?php
-require 'constantes.inc.php';
+require 'controleurs/constantes.inc.php';
 
 ?>
 <!DOCTYPE html>
@@ -25,13 +25,7 @@ require 'constantes.inc.php';
                     <!-- top nav -->
                     <div class="navbar navbar-blue navbar-static-top">
                         <div class="navbar-header">
-                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
-                                <span class="sr-only">Toggle</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <a href="http://usebootstrap.com/theme/facebook" class="navbar-brand logo">b</a>
+                            <a href="index.php" class="navbar-brand logo">F</a>
                         </div>
                         <nav class="collapse navbar-collapse" role="navigation">
                             <!--insérer la barre de recherche ici-->
@@ -69,8 +63,8 @@ require 'constantes.inc.php';
                                     <div class="panel panel-default">
                                         <div class="panel-thumbnail"><img src="assets/img/r6.jpg" class="img-responsive"></div>
                                         <div class="panel-body">
-                                            <p class="lead">ZeiShoot Lastest Post</p>
-                                            <p>527 Followers, 10 Posts</p>
+                                            <p class="lead">ZeiShoot Shoting</p>
+                                            <p>727 Followers, 10 Posts</p>
                                             <p>
                                                 <img src="assets/img/Logo.jpg" height="40px" width="40px">
                                             </p>
@@ -80,51 +74,17 @@ require 'constantes.inc.php';
                                 <!-- main col right -->
                                 <div class="col-sm-7">
                                     <div class="panel panel-default">
-                                        <div class="panel-heading"><a href="#" class="pull-right">View all</a>
-                                            <h4>Bootply Editor &amp; Code Library</h4>
+                                        <div class="panel-heading"><a href="https://www.instagram.com/zeishoot" class="pull-right">Voir Plus</a>
+                                            <h4>Blog de ZeiShoot</h4>
                                         </div>
                                         <div class="panel-body">
-                                            <p><img src="assets/img/150x150.gif" class="img-circle pull-right"> <a href="#">The Bootstrap Playground</a></p>
+                                            <p><img src="assets/img/Ico_BlackZ.ico" class="img-circle pull-right"> <a href="#">Les posts sont affichés de façon chronologique.</a></p>
                                             <div class="clearfix"></div>
                                             <hr> Design, build, test, and prototype using Bootstrap in real-time from your Web browser. Bootply combines the power of hand-coded HTML, CSS and JavaScript with the benefits of responsive design using Bootstrap.
                                             Find and showcase Bootstrap-ready snippets in the 100% free Bootply.com code repository.
                                         </div>
                                     </div>
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading"><a href="#" class="pull-right">View all</a>
-                                            <h4>Stackoverflow</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <img src="assets/img/150x150.gif" class="img-circle pull-right"> <a href="#">Keyword: Bootstrap</a>
-                                            <div class="clearfix"></div>
-                                            <hr>
-                                            <p>If you're looking for help with Bootstrap code, the
-                                                <code>twitter-bootstrap</code> tag at <a href="http://stackoverflow.com/questions/tagged/twitter-bootstrap">Stackoverflow</a> is a good place to find answers.
-                                            </p>
-                                            <hr>
-                                            <form>
-                                                <div class="input-group">
-                                                    <div class="input-group-btn">
-                                                        <button class="btn btn-default">+1</button><button class="btn btn-default"><i class="glyphicon glyphicon-share"></i></button>
-                                                    </div>
-                                                    <input class="form-control" placeholder="Add a comment.." type="text">
-                                                </div>
-                                            </form>
-
-                                        </div>
-                                    </div>
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading"><a href="#" class="pull-right">View all</a>
-                                            <h4>Portlet Heading</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <ul class="list-group">
-                                                <li class="list-group-item">Modals</li>
-                                                <li class="list-group-item">Sliders / Carousel</li>
-                                                <li class="list-group-item">Thumbnails</li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <!--/row-->
