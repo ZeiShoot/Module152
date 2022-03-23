@@ -1,5 +1,12 @@
 <?php
+//Démarrage de la session
 session_start();
+
+//Include des fichiers nécéssaires
+include 'traitement/monPdo.php';
+include 'traitement/Post.php';
+include 'traitement/Media.php';
+
 if (!isset($_SESSION['message'])) {
     $_SESSION['message'] = [
         'type' => null,
@@ -8,13 +15,10 @@ if (!isset($_SESSION['message'])) {
     $_SESSION['idEditPost'] = null;
 }
 ini_set('display_errors', 1);
-$uc = filter_input(INPUT_GET, 'uc') == null ? "home" : filter_input(INPUT_GET, 'uc'); // affiche la page accueil par défaut
+$uc = filter_input(INPUT_GET, 'uc') == null ? "home" : filter_input(INPUT_GET, 'uc'); //Page d'accueil par défaut
 
-include 'traitement/monPdo.php';
-include 'traitement/Post.php';
-include 'traitement/Media.php';
 
-// afichage du header
+//Visuel du header
 if($uc != "getAllPosts"){
 include 'visuel/header.php';
 }
@@ -24,23 +28,18 @@ switch ($uc) {
         // Affichage de la page d'accueil
     case 'home':
         $posts = Post::getAllPosts();
-        include "visuel/home.php"; // affiche la vue d'accueil
+        include "visuel/home.php"; //Visuel de la page d'acceuil
         break;
-        // redirection sur le controller post
     case 'post':
-        include 'controllers/post_controller.php';
+        include 'traitement/post_controller.php';
         break;
 
         case 'getAllPosts':
             echo Post::CountAllPosts();
             break;
-
-    default:
-        include 'visuel/erreur404.php'; // affiche la page d'erreur 404 si le lien n'est pas valide
-        break;
 }
 
-// Affichage du footer
+//Visuel du footer
 if($uc != "getAllPosts"){
 include 'visuel/footer.php';
 } 

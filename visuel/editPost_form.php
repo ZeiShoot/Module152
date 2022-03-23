@@ -12,27 +12,27 @@
         ];
     }
     ?>
-    <h1>Modifier un post</h1>
+    <h1>Modification d'un post</h1>
 
     <!-- Formulaire de création de posts -->
     <form method="POST" action="index.php?uc=post&action=validateEdit" enctype="multipart/form-data">
         <div class="form-group">
-            <label for="idDescriptionPost">Description</label>
+            <label for="idDescriptionPost">Description : </label>
             <textarea class="form-control" id="idDescriptionPost" rows="5" name="descriptionPost"><?= $post->getCommentairePost() ?></textarea>
         </div>
 
         <div class="form-group">
-            <label>Fichiers actuels</label>
+            <label>Fichier(s) contenus dans le post : </label>
             <div style="display: flex; flex-direction: row; flex-wrap: wrap; flex-flow :center; width: 100%">
             <?php
             foreach (Media::getAllMediasByPostId($idPost) as $media) {
                 switch (explode("/", $media->getTypeMedia())[0]) {
-                    case 'image':
+                    case 'image': 
             ?>
                         <div style="border: 1px solid black; width: 33.3%">
                             <img width="100%" src="./assets/medias/<?= $media->getNomFichierMedia() ?>" alt="image">
                             <a class="btn btn-danger" href="index.php?uc=post&action=deleteMedia&idMedia=<?= $media->getIdMedia() ?>">X</a>
-                        </div>
+                        </div> 
                     <?php
                         break;
                     case 'video':
@@ -63,11 +63,12 @@
         </div>
 
         <div class="form-group">
-            <label for="idFile">Fichiers</label>
+            <label for="idFile">Ajouter des fichiers au post : </label>
             <input type="file" class="form-control-file" id="idFile" accept="image/*, video/*, audio/*" multiple name="filesPost[]">
         </div>
 
-        <input class="btn btn-success" type="submit" value="Modifier le post">
+        <input class="btn btn-success" type="submit" value="Confirmer la modification">
+        <hr>
     </form>
 </div>
 <?php Media::CountAllMediasPerPost($_SESSION['idEditPost']) ?>

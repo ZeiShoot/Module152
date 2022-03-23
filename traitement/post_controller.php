@@ -1,57 +1,58 @@
 <?php
+/* Controleur si tout va bien lors du post*/
+
 $action = filter_input(INPUT_GET, 'action');
 switch ($action) {
-        // affiche la page de post
+        //Visuel de la page de Post
     case 'show':
-        include 'vues/post_form.php';
+        //Affiche le formulaire de post
+        include 'visuel/post_form.php';
         break;
-
-        // traite les données du formulaire (validation du formulaire)
     case 'validate':
-        // récupéraion de la description
-        $descriptionPost = filter_input(INPUT_POST, 'descriptionPost', FILTER_SANITIZE_STRING);
-        // récupération des fichiers
+        //Récupération de la description et récupération du/des fichier(s)
         $fichiersArray = $_FILES["filesPost"];
+        $descriptionPost = filter_input(INPUT_POST, 'descriptionPost', FILTER_SANITIZE_STRING);
+        
 
 
-        // verification si les champs ont été remplis
+        //Si tout les champs sont remplis alors :
         if ($descriptionPost != "" && $fichiersArray['name'][0] != "") {
-
-            $totalMo = 0;
-
-            // récupérer les fichiers
+            
             $newImagesArray = [];
+            $totalMo = 0;
             for ($i = 0; $i < count($fichiersArray['name']); $i++) {
 
-                // vérifier si le fichier est une image
+                //Vérification du type de fichier (si c'est bien une image ou non)
                 if (explode("/", $fichiersArray['type'][$i])[0] != "image" && explode("/", $fichiersArray['type'][$i])[0] != "video" && explode("/", $fichiersArray['type'][$i])[0] != "audio") {
                     $_SESSION['message'] = [
                         'type' => "danger",
-                        'content' => "Les fichiers ne peuvent être que des images, vidéos ou audio !"
+                        'content' => "Seulement les fichier vidéo/audio et images sont supportés !"
                     ];
                     header('Location: index.php?uc=post&action=show');
                 }
 
+
+                
+
+                // vérification de la taille totale de tous les fichiers afin de ne pas dépacer 70 Mo
+                if ($totalMo > 70) {
+                    $_SESSION['message'] = [
+                        'type' => "danger",
+                        'content' => "La taille totale des fichier ne doit pas dépasser 70 Mo !"
+                    ];
+                    header('Location: index.php?uc=post&action=show');
+                }
 
                 $fileMo = Media::ConvertOctetsToMO($fichiersArray['size'][$i]);
                 // vérifie la taille de chaque image afin de ne pas dépacer 3 Mo
                 if ($fileMo > 3) {
                     $_SESSION['message'] = [
                         'type' => "danger",
-                        'content' => "Chaque image doit faire moins de 3 Mo !"
+                        'content' => "L'image ne doit pas dépasser les 3 Mo !"
                     ];
                     header('Location: index.php?uc=post&action=show');
                 } else {
                     $totalMo .= $fileMo;
-                }
-
-                // vérification de la taille totale de tous les fichiers afin de ne pas dépacer 70 Mo
-                if ($totalMo > 70) {
-                    $_SESSION['message'] = [
-                        'type' => "danger",
-                        'content' => "Le total des fichiers doit faire moins de 70 Mo !"
-                    ];
-                    header('Location: index.php?uc=post&action=show');
                 }
 
                 $newImagesArray[$i] = [
@@ -61,12 +62,10 @@ switch ($action) {
                     "size" => $fichiersArray['size'][$i]
                 ];
             }
-
-            $currentDate = date("Y/m/d/H/i/s");
-
-            // Début de la transaction
+            //Transaction (début)
             MonPdo::getInstance()->beginTransaction();
-
+            //Récupère la date du jour
+            $currentDate = date("Y/m/d/H/i/s");
             // on crée le post dans la base de données
             $post = new Post();
             $post->setCommentairePost($descriptionPost)
@@ -95,11 +94,12 @@ switch ($action) {
                             ->setIdPost($idPost);
                         Media::AddMedia($media);
                     } else {
-                        // si il y a un fichier qui ne se push pas rollback et cancel les requêtes
+                        //Rollback en cas d'échec, + affiche un message d'erreur
                         MonPdo::getInstance()->rollBack();
                         $_SESSION['message'] = [
                             'type' => "danger",
-                            'content' => "Une image n'a pas pu être publié !"
+                            //Message d'erreur
+                            'content' => "OOPS ! Une erreur lors du Post est survenue..."
                         ];
                         header('Location: index.php?uc=post&action=show');
                     }
@@ -108,25 +108,25 @@ switch ($action) {
                 MonPdo::getInstance()->rollBack();
                 $_SESSION['message'] = [
                     'type' => "danger",
-                    'content' => "Une image n'a pas pu être publié !"
+                    'content' => "OOPS ! Une erreur lors du Post est survenue..."
                 ];
                 header('Location: index.php?uc=post&action=show');
             }
 
-            // on push les infos dans base de donnée avec le commit
+            //Commit vers la base de données
             MonPdo::getInstance()->commit();
 
-            // message de success de création du post et des médias
+            //Si le post à été créer, afficher un message de réussite.
             $_SESSION['message'] = [
                 'type' => "success",
-                'content' => "Le post à bien été crée et tous les fichiers ont été importés"
+                'content' => "Vous avez posté avec succès !"
             ];
-            header('Location: index.php?uc=post&action=show');
+            header('Location: index.php?');
         } else {
             // retourne un message d'erreur si les champs ne sonts pas remplis
             $_SESSION['message'] = [
                 'type' => "danger",
-                'content' => "Merci de remplir tous les champs !"
+                'content' => "Tout les champs doivent êtres rempli  !"
             ];
             header('Location: index.php?uc=post&action=show');
         }
@@ -137,7 +137,7 @@ switch ($action) {
 
         // supprime un post
     case 'delete':
-        // récupération du post
+        // récupération du post avec un filter input
         $idPost = filter_input(INPUT_GET, 'idPost', FILTER_SANITIZE_NUMBER_INT);
 
         // suppression des images
@@ -156,27 +156,29 @@ switch ($action) {
                 // retourne un message d'erreur
                 $_SESSION['message'] = [
                     'type' => "danger",
-                    'content' => "Un fichier n'a pas pu être supprimé. Merci de ressayer."
+                    'content' => "OOPS ! Une erreur lors de la suppression est survenue..."
                 ];
-                header('Location: index.php');
+                header('Location:index.php');
             }
         }
         Post::DeletePost($idPost);
         MonPdo::getInstance()->commit();
         $_SESSION['message'] = [
             'type' => "success",
-            'content' => "Le post a bien été supprimé."
+            //Message de réussite affiché.
+            'content' => "Le post à été supprimé avec succès"
         ];
-        header('Location: index.php');
+        header('Location:index.php');
         break;
 
-        // affiche le formulaire de modification d'un post
+        
     case 'edit':
-        // récupération du post
+        // récupération du post avec un filter input
         $idPost = filter_input(INPUT_GET, 'idPost', FILTER_SANITIZE_NUMBER_INT);
         $post = Post::GetPostById($idPost);
         $_SESSION['idEditPost'] = $idPost;
-        include 'vues/editPost_form.php';
+        //Visuel du formulaire.
+        include 'visuel/editPost_form.php';
         break;
 
         // valide le formulaire de modification de post
@@ -189,42 +191,40 @@ switch ($action) {
 
         // verification si les champs ont été remplis
         if ($descriptionPost != "") {
-
-
             $totalMo = 0;
-
             if ($fichiersArray['name'][0] != "") {
-                // récupérer les fichiers
+                //Récupération des fichiers
                 $newImagesArray = [];
                 for ($i = 0; $i < count($fichiersArray['name']); $i++) {
 
-                    // vérifier si le fichier est une image
+                    //Vérifie si c'est bien une image
                     if (explode("/", $fichiersArray['type'][$i])[0] != "image" && explode("/", $fichiersArray['type'][$i])[0] != "video" && explode("/", $fichiersArray['type'][$i])[0] != "audio") {
                         $_SESSION['message'] = [
                             'type' => "danger",
-                            'content' => "Les fichiers ne peuvent être que des images, vidéos ou audio !"
+                            //Affiche un message d'erreur si c'est un autre type de fichier.
+                            'content' => "Seulement les fichier vidéo/audio et images sont supportés !"
                         ];
                         header('Location: index.php?uc=post&action=edit&idPost=' . $_SESSION['idEditPost']);
                     }
 
 
                     $fileMo = Media::ConvertOctetsToMO($fichiersArray['size'][$i]);
-                    // vérifie la taille de chaque image afin de ne pas dépacer 3 Mo
+                    //Si le fichier dépasse 3Mo, afficher un message d'erreur.
                     if ($fileMo > 3) {
                         $_SESSION['message'] = [
                             'type' => "danger",
-                            'content' => "Chaque image doit faire moins de 3 Mo !"
+                            'content' => "L'image ne doit pas dépasser les 3 Mo !"
                         ];
                         header('Location: index.php?uc=post&action=edit&idPost=' . $_SESSION['idEditPost']);
                     } else {
                         $totalMo .= $fileMo;
                     }
 
-                    // vérification de la taille totale de tous les fichiers afin de ne pas dépacer 70 Mo
+                    //Si les fichiers dépassent 70Mo, afficher un message d'erreur.
                     if ($totalMo > 70) {
                         $_SESSION['message'] = [
                             'type' => "danger",
-                            'content' => "Le total des fichiers doit faire moins de 70 Mo !"
+                            'content' => "La taille totale des fichier ne doit pas dépasser 70 Mo !"
                         ];
                         header('Location: index.php?uc=post&action=edit&idPost=' . $_SESSION['idEditPost']);
                     }
@@ -272,13 +272,12 @@ switch ($action) {
                                 ->setModificationDate($currentDate)
                                 ->setIdPost($idPost);
                             Media::AddMedia($media);
-                            echo "OHHHHHHHHHHHHHHH";
                         } else {
                             // si il y a un fichier qui ne se push pas rollback et cancel les requêtes
                             MonPdo::getInstance()->rollBack();
                             $_SESSION['message'] = [
                                 'type' => "danger",
-                                'content' => "Une image n'a pas pu être publié !"
+                                'content' => "OOPS ! Une erreur est survenue lors du Post..."
                             ];
                             header('Location: index.php?uc=post&action=edit&idPost=' . $_SESSION['idEditPost']);
                         }
@@ -294,7 +293,7 @@ switch ($action) {
             } else {
                 $_SESSION['message'] = [
                     'type' => "danger",
-                    'content' => "Merci de choisir au moins une image pour le post !"
+                    'content' => "Veuillez choisirs 1 fichier minimum !"
                 ];
                 header('Location: index.php?uc=post&action=edit&idPost=' . $_SESSION['idEditPost']);
             }
@@ -305,14 +304,14 @@ switch ($action) {
             // message de success de création du post et des médias
             $_SESSION['message'] = [
                 'type' => "success",
-                'content' => "Le post à bien été modifié et tous les fichiers ont été importés"
+                'content' => "Votre Post à été mis à jour avec succès !"
             ];
-            header('Location: index.php');
+            header('Location:index.php');
         } else {
             // retourne un message d'erreur si les champs ne sonts pas remplis
             $_SESSION['message'] = [
                 'type' => "danger",
-                'content' => "Merci de remplir tous les champs !"
+                'content' => "Tout les champs doivent êtres rempli !"
             ];
             header('Location: index.php?uc=post&action=edit&idPost=' . $_SESSION['idEditPost']);
         }
@@ -331,7 +330,7 @@ switch ($action) {
             Media::DeleteMedia($idMedia);
             $_SESSION['message'] = [
                 'type' => "success",
-                'content' => "Le média No. " . $idMedia . " a bien été supprimé"
+                'content' => "Le Post No. " . $idMedia . " a bien été supprimé du Blog."
             ];
         } else {
             // on cancel si un fichier n'a pas pu être supprimé
@@ -339,13 +338,13 @@ switch ($action) {
             // retourne un message d'erreur
             $_SESSION['message'] = [
                 'type' => "danger",
-                'content' => "Un fichier n'a pas pu être supprimé. Merci de ressayer."
+                'content' => "OOPS ! Un fichier n'a pas pu être supprimé avec succès..."
             ];
         }
         header('Location: index.php?uc=post&action=edit&idPost=' . $_SESSION['idEditPost']);
         break;
 
     default:
-        include 'vues/erreur404.php'; // affiche la page d'erreur 404 si le lien n'est pas valide
+        include 'visuel/erreur404.php'; // affiche la page d'erreur 404 si le lien n'est pas valide
         break;
 }
